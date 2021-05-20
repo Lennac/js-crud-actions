@@ -9,6 +9,24 @@ document.getElementById("load").onclick = function () {
   });
 };
 
+document.getElementById("submit").onclick = function (evt) {
+  evt.preventDefault();
+  const formData = new FormData(document.querySelector("form"));
+  const newData = {
+    name: formData.get("name"),
+    price: formData.get("price"),
+    quantity: formData.get("quantity"),
+    description: formData.get("description"),
+    color: formData.get("color")
+  };
+
+  const updatedFields = _.omitBy(newData, function(val,key) {
+    return key === "id" || currentProduct[key] == val;
+  });
+
+  axios.patch(`/api/products/${currentProduct.id}`, updatedFields).then(processResults);
+}
+
 function loadProduct(data) {
   document.getElementsByName("name")[0].value = data.name;
   document.getElementsByName("price")[0].value = data.price;
